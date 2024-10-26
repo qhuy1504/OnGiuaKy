@@ -94,17 +94,22 @@ const Screen01 = () => {
                 </View>
 
                 <FlatList
-                    data={categoriesapi}
-                    renderItem={({ item }) => (
-                        <View style={styles.categoryItem}>
-                            {/* <Image source={require('../img/{item.image}')} style={styles.categoryImage} />  */}
-                            <Image source={imageLocal[item.image]} style={styles.categoryImage} /> 
-                            
-                            <Text style={styles.catoryText}>{item.name}</Text>
-                        </View>
+                        data={categoriesapi}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                           
+                            <View style={styles.categoryItem}>
+                                    <TouchableOpacity>
+                                        <Image source={{ uri: item.image }} style={styles.categoryImage} />
+                                      
+
+                                        <Text style={styles.catoryText}>{item.name}</Text>
+                                    </TouchableOpacity>
+                                   
+                             </View>
 
                     )}
-                    keyExtractor={(item) => item.name}
+                   
                     
                     numColumns={4}
                     contentContainerStyle={styles.contentContainer}
@@ -130,7 +135,7 @@ const Screen01 = () => {
                      data={locationsapi.slice(0,3)}
                     renderItem={({ item }) => (
                         <View style={styles.locationItem}>
-                            <Image source={imageLocal[item.image]} style={styles.locationImage} />
+                            <Image source={{ uri: item.image }} style={styles.locationImage} />
                            
                         </View>
 
@@ -157,7 +162,7 @@ const Screen01 = () => {
                         data={locationsapi.slice(4, 6)}
                         renderItem={({ item }) => (
                             <View style={styles.recomendedItem}>
-                                <Image source={imageLocal[item.image]} style={styles.recomendedImage} />
+                                <Image source={{ uri: item.image }} style={styles.locationImage} />
 
                             </View>
 
@@ -288,6 +293,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         alignItems: 'center',
         paddingVertical: 10,
+        marginLeft: 25,
     }, locationImage: {
         width: 100,
         height: 100,
@@ -312,6 +318,13 @@ const styles = StyleSheet.create({
         height: 40,
     }, fotterText: {
         color: 'white',
+    }, categoryImage: {
+        
+        width: 65,
+        height: 65,
+        
+    }, catoryText: {
+        marginLeft: 10,
     }
 
 
