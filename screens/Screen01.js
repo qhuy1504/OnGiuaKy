@@ -2,28 +2,14 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import axios from "axios";
 
-const Screen01 = () => {
+const Screen01 = ({ route, navigation }) => {
     const [categories, setCategories] = useState([]);
     const [locations, setLocations] = useState([]);
     const [categoriesapi, setCategoriesapi] = useState([]);
     const [locationsapi, setLocationsapi] = useState([]);
-
-    const imageLocal = {
-        "resort.png": require("../img/resort.png"),
-        "homestay.png": require("../img/homestay.png"),
-        "hotel.png": require("../img/hotel.png"),
-        "lodge.png": require("../img/lodge.png"),
-        "villa.png": require("../img/villa.png"),
-        "apartment.png": require("../img/apartment.png"),
-        "hostel.png": require("../img/hostel.png"),
-        "seeall.png": require("../img/seeall.png"),
-        "photo1.png": require("../img/photo1.png"),
-        "photo2.png": require("../img/photo2.png"),
-        "photo3.png": require("../img/photo3.png"),
-        "photo4.png": require("../img/photo4.png"),
-        "photo5.png": require("../img/photo5.png"),
-
-    };
+    const [search, setSearch] = useState('');
+    const [filteredCategories, setFilteredCategories] = useState([]);
+    const { user } = route.params || 'Không tìm thấy user';
     useEffect(() => {
         setCategories([
             { name: 'Resort', image: require('../img/resort.png') },
@@ -46,14 +32,22 @@ const Screen01 = () => {
         ]);
         axios.get('https://671cab6e09103098807aca53.mockapi.io/dulich/v1/category').then((response) => {
             setCategoriesapi(response.data);
+            setFilteredCategories(response.data);
+            
         });
         axios.get('https://671cab6e09103098807aca53.mockapi.io/dulich/v1/location').then((response) => {
             setLocationsapi(response.data);
          });
     
-
     }, []);
-
+    const handleSearch = (text) => {
+        setSearch(text); // Cập nhật state search
+        const filteredData = categoriesapi.filter(item =>
+            item.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredCategories(filteredData); // Cập nhật kết quả tìm kiếm
+    };
+        
     return (
         <View style={styles.container}>
             <ScrollView >
@@ -62,26 +56,31 @@ const Screen01 = () => {
                     <Image source={require('../img/logoicon.png')} style={styles.imgHeader} />
                     <View style={styles.inputContainer}>
                         <Image source={require('../img/findicon.png')} style={styles.imgSearch} />
-                        <TextInput style={styles.searchBox} placeholder="Search here..." />
+                            <TextInput style={styles.searchBox} placeholder="Search here..."
+                                value={search}
+                                onChangeText={handleSearch}
+
+                            
+                            />
 
                     </View>
 
                 </View>
                 <View style={styles.header2}>
                     
-                    <View style={styles.gioiThieu}>
-                        <Image source={require('../img/personicon.png')} style={styles.imgProfile} />
+                        <View style={styles.gioiThieu}>
+                            <TouchableOpacity onPress={ ()=>navigation.navigate('Profile', {user})}>
+                            <Image source={user && user.avatar ? { uri: `http://192.168.2.144:3000/uploads/${user.avatar}`  } : require('../img/personicon.png')} style={styles.imgProfile} />
+                            </TouchableOpacity>
                         <View style={styles.title}>
-                            <Text style={styles.title1}>Welcome !</Text>
-                            <Text style={styles.title2}>Donna Stroupe</Text>
+                                <Text style={styles.title1}>Welcome !</Text>
+                                <Text style={styles.title2}>{user ? user.username: "Guest"}</Text>
                         </View>
                       
                     </View>
                     <Image source={require('../img/ringicon.png')} style={styles.imgBell} />
 
                 </View>
-
-
 
             </View>
             <View style = {styles.categoryContainer}>
@@ -94,7 +93,7 @@ const Screen01 = () => {
                 </View>
 
                 <FlatList
-                        data={categoriesapi}
+                        data={filteredCategories}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
                            
