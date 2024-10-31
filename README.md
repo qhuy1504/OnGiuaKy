@@ -23,9 +23,12 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 TẠO MÔI TRƯỜNG NODE JS ĐỂ TẠO SERVER
 
-1. mkdir backend
+1. mkdir backend|
+
 cd backend
+
 npm init -y
+
 2. npm install express cors multer
 3. node server.js
 
